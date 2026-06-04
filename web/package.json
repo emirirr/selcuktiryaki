@@ -1,0 +1,9 @@
+{
+  "name": "asia-otomasyon-teklif",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node kur-sunucusu.mjs",
+    "kurlar": "node kur-sunucusu.mjs"
+  }
+}

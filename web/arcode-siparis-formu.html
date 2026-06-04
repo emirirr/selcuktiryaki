@@ -1,0 +1,1667 @@
+﻿<!DOCTYPE html>
+<html lang="tr">
+<head>
+ <meta charset="UTF-8">
+ <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>ARCODE Kumanda Sistemi Teklif / Sipariş Formu</title>
+ <link rel="preconnect" href="https://fonts.googleapis.com">
+ <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+ <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+ <style>
+ :root {
+ /* Asia Otomasyon kurumsal renkler (logo PDF sayfa 12) */
+ --primary: #1b2a49;
+ --primary-dark: #14213d;
+ --primary-soft: #eef1f6;
+ --accent: #6807f9;
+ --accent-soft: #f3ebff;
+ --text: #1b2a49;
+ --text-muted: #5a6478;
+ --border: #d4dae6;
+ --border-strong: #9aa8be;
+ --surface: #ffffff;
+ --surface-alt: #f5f6f8;
+ --radius: 10px;
+ --radius-sm: 6px;
+ --shadow: 0 4px 24px rgba(27, 42, 73, 0.08);
+ --shadow-lg: 0 12px 40px rgba(27, 42, 73, 0.12);
+ }
+ *, *::before, *::after { box-sizing: border-box; }
+ html { scroll-behavior: smooth; }
+ body {
+ font-family: "Poppins", "Segoe UI", system-ui, sans-serif;
+ font-size: 13px;
+ line-height: 1.5;
+ color: var(--text);
+ margin: 0;
+ background: linear-gradient(160deg, #eef1f6 0%, #f5f6f8 50%, #eceef2 100%);
+ min-height: 100vh;
+ }
+ .app {
+ max-width: 1200px;
+ margin: 0 auto;
+ padding: 20px 16px 48px;
+ }
+ .app-layout {
+ display: grid;
+ grid-template-columns: 1fr 320px;
+ gap: 20px;
+ align-items: start;
+ }
+ @media (max-width: 960px) {
+ .app-layout { grid-template-columns: 1fr; }
+ .fiyat-panel { position: static !important; }
+ }
+ .form-column { min-width: 0; }
+ .fiyat-panel {
+ position: sticky;
+ top: 16px;
+ background: var(--surface);
+ border: 1px solid var(--border);
+ border-radius: var(--radius);
+ box-shadow: var(--shadow-lg);
+ overflow: hidden;
+ }
+ .fiyat-panel-header {
+ padding: 14px 16px;
+ background: var(--primary);
+ color: #fff;
+ }
+ .fiyat-panel-header h2 {
+ margin: 0;
+ font-size: 14px;
+ font-weight: 700;
+ }
+ .fiyat-panel-header p {
+ margin: 4px 0 0;
+ font-size: 11px;
+ opacity: 0.85;
+ }
+ .fiyat-para-row {
+ display: flex;
+ flex-wrap: wrap;
+ gap: 8px;
+ align-items: center;
+ margin-top: 10px;
+ }
+ .fiyat-para-row label {
+ font-size: 11px;
+ font-weight: 600;
+ }
+ .fiyat-para-row select {
+ padding: 5px 8px;
+ border-radius: var(--radius-sm);
+ border: 1px solid rgba(255,255,255,0.35);
+ background: rgba(255,255,255,0.12);
+ color: #fff;
+ font-family: inherit;
+ font-size: 12px;
+ font-weight: 600;
+ }
+ .fiyat-kur-bar {
+ padding: 8px 14px;
+ background: var(--surface-alt);
+ border-bottom: 1px solid var(--border);
+ font-size: 10px;
+ color: var(--text-muted);
+ line-height: 1.45;
+ display: flex;
+ flex-wrap: wrap;
+ align-items: flex-start;
+ justify-content: space-between;
+ gap: 8px;
+ }
+ .fiyat-kur-bar > div:first-child { flex: 1; min-width: 180px; }
+ .fiyat-kur-bar button {
+ margin-left: 8px;
+ padding: 3px 8px;
+ font-size: 10px;
+ font-family: inherit;
+ font-weight: 600;
+ border: 1px solid var(--border);
+ border-radius: 4px;
+ background: var(--surface);
+ color: var(--primary);
+ cursor: pointer;
+ }
+ .fiyat-kur-bar button:disabled { opacity: 0.5; cursor: wait; }
+ .fiyat-kur-durum--hata { color: #b45309; font-weight: 600; }
+ .fiyat-kur-uyari {
+ margin-top: 6px;
+ padding: 8px;
+ background: #fef2f2;
+ border: 1px solid #fecaca;
+ border-radius: var(--radius-sm);
+ font-size: 10px;
+ color: #991b1b;
+ line-height: 1.4;
+ }
+ .fiyat-kur-uyari code {
+ background: #fff;
+ padding: 1px 4px;
+ border-radius: 3px;
+ font-size: 10px;
+ }
+ .fiyat-kaynak-pb { color: var(--text-muted); font-size: 9px; }
+ .fiyat-panel-body {
+ padding: 12px 14px 16px;
+ max-height: calc(100vh - 120px);
+ overflow-y: auto;
+ }
+ .fiyat-bos {
+ text-align: center;
+ color: var(--text-muted);
+ font-size: 12px;
+ padding: 20px 8px;
+ }
+ #fiyat-satirlar {
+ list-style: none;
+ margin: 0;
+ padding: 0;
+ }
+ .fiyat-satir {
+ padding: 10px 0;
+ border-bottom: 1px solid var(--border);
+ }
+ .fiyat-satir:last-child { border-bottom: none; }
+ .fiyat-satir-ust {
+ display: flex;
+ justify-content: space-between;
+ gap: 8px;
+ font-size: 12px;
+ font-weight: 600;
+ }
+ .fiyat-marka {
+ color: var(--accent);
+ font-size: 10px;
+ text-transform: uppercase;
+ letter-spacing: 0.04em;
+ }
+ .fiyat-tutar { color: var(--primary); white-space: nowrap; }
+ .fiyat-satir-ad {
+ font-size: 12px;
+ margin-top: 2px;
+ line-height: 1.35;
+ }
+ .fiyat-satir-detay {
+ font-size: 10px;
+ color: var(--text-muted);
+ margin-top: 2px;
+ }
+ .fiyat-satir--eksik .fiyat-tutar { color: #b45309; }
+ .fiyat-teklif { font-size: 11px; font-weight: 600; }
+ .fiyat-uyari {
+ margin-top: 10px;
+ padding: 8px 10px;
+ background: #fff8e6;
+ border-radius: var(--radius-sm);
+ font-size: 11px;
+ color: #92400e;
+ }
+ .fiyat-ozet {
+ margin-top: 12px;
+ padding-top: 12px;
+ border-top: 2px solid var(--primary-soft);
+ }
+ .fiyat-ozet-row {
+ display: flex;
+ justify-content: space-between;
+ font-size: 12px;
+ margin-bottom: 6px;
+ }
+ .fiyat-ozet-row--toplam {
+ font-size: 15px;
+ font-weight: 700;
+ color: var(--primary);
+ margin-top: 8px;
+ padding-top: 8px;
+ border-top: 1px dashed var(--border);
+ }
+ .fiyat-adet-bilgi {
+ font-size: 10px;
+ color: var(--text-muted);
+ text-align: center;
+ margin-top: 8px;
+ }
+ .top-bar {
+ display: flex;
+ flex-wrap: wrap;
+ align-items: center;
+ justify-content: space-between;
+ gap: 12px;
+ margin-bottom: 20px;
+ padding: 14px 18px;
+ background: var(--surface);
+ border-radius: var(--radius);
+ box-shadow: var(--shadow);
+ border: 1px solid var(--border);
+ }
+ .top-bar .brand {
+ display: flex;
+ align-items: center;
+ gap: 12px;
+ }
+ .top-bar .brand img {
+ height: 40px;
+ width: auto;
+ object-fit: contain;
+ }
+ .top-bar .brand-text {
+ font-weight: 700;
+ font-size: 14px;
+ color: var(--primary);
+ letter-spacing: -0.02em;
+ line-height: 1.25;
+ }
+ .top-bar .brand-text span {
+ display: block;
+ font-size: 11px;
+ font-weight: 500;
+ color: var(--text-muted);
+ }
+ .nav-tabs {
+ display: flex;
+ gap: 6px;
+ background: var(--surface-alt);
+ padding: 4px;
+ border-radius: var(--radius-sm);
+ }
+ .nav-tabs button {
+ padding: 8px 16px;
+ font-size: 12px;
+ font-weight: 600;
+ font-family: inherit;
+ border: none;
+ background: transparent;
+ color: var(--text-muted);
+ border-radius: 5px;
+ cursor: pointer;
+ transition: background 0.15s, color 0.15s;
+ }
+ .nav-tabs button:hover { color: var(--primary); background: rgba(27, 42, 73, 0.06); }
+ .nav-tabs button.active {
+ background: var(--primary);
+ color: #fff;
+ box-shadow: 0 2px 8px rgba(27, 42, 73, 0.25);
+ }
+ .actions {
+ display: flex;
+ gap: 8px;
+ }
+ .actions button {
+ padding: 8px 16px;
+ font-size: 12px;
+ font-weight: 600;
+ font-family: inherit;
+ cursor: pointer;
+ border-radius: var(--radius-sm);
+ border: 1px solid var(--primary);
+ background: var(--primary);
+ color: #fff;
+ transition: background 0.15s, transform 0.1s;
+ }
+ .actions button:hover { background: var(--primary-dark); }
+ .actions button:active { transform: scale(0.98); }
+ .actions button.secondary {
+ background: var(--surface);
+ color: var(--primary);
+ }
+ .actions button.secondary:hover { background: var(--primary-soft); }
+ .page-panel { display: none; animation: fadeIn 0.25s ease; }
+ .page-panel.active { display: block; }
+ @keyframes fadeIn {
+ from { opacity: 0; transform: translateY(6px); }
+ to { opacity: 1; transform: translateY(0); }
+ }
+ .form-page {
+ background: var(--surface);
+ border-radius: var(--radius);
+ box-shadow: var(--shadow-lg);
+ border: 1px solid var(--border);
+ overflow: hidden;
+ }
+ header.company {
+ background: var(--primary);
+ color: #fff;
+ text-align: center;
+ padding: 20px 20px 18px;
+ }
+ header.company .sirket-bilgi {
+ text-align: center;
+ margin-bottom: 16px;
+ padding-bottom: 16px;
+ border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+ }
+ header.company .sirket-bilgi img {
+ height: 56px;
+ width: auto;
+ object-fit: contain;
+ margin-bottom: 10px;
+ }
+ header.company .sirket-bilgi h1 {
+ margin: 0 0 8px;
+ font-size: 16px;
+ font-weight: 700;
+ letter-spacing: 0.02em;
+ }
+ header.company .sirket-bilgi .contact {
+ font-size: 11px;
+ line-height: 1.6;
+ opacity: 0.95;
+ }
+ header.company .sirket-bilgi .contact a {
+ color: #c8d4e8;
+ text-decoration: none;
+ }
+ header.company .sirket-bilgi .contact a:hover { text-decoration: underline; }
+ header.company .form-subtitle {
+ margin: 0;
+ font-size: 13px;
+ font-weight: 600;
+ letter-spacing: 0.04em;
+ text-transform: uppercase;
+ }
+ header.company .badge {
+ display: inline-block;
+ margin-top: 12px;
+ padding: 6px 20px;
+ background: var(--accent);
+ color: #fff;
+ font-weight: 700;
+ font-size: 10px;
+ letter-spacing: 0.12em;
+ border-radius: 4px;
+ }
+ .form-body { padding: 24px 28px 32px; }
+ h2.page-title {
+ text-align: center;
+ font-size: 14px;
+ font-weight: 700;
+ color: var(--primary);
+ margin: 0 0 24px;
+ padding-bottom: 12px;
+ border-bottom: 2px solid var(--primary-soft);
+ text-transform: uppercase;
+ letter-spacing: 0.04em;
+ }
+ .section {
+ margin-bottom: 22px;
+ padding-bottom: 20px;
+ border-bottom: 1px solid var(--border);
+ }
+ .section:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+ h3.section-title {
+ font-size: 11px;
+ font-weight: 700;
+ color: var(--primary);
+ margin: 0 0 14px;
+ padding: 0 0 0 12px;
+ border-left: 4px solid var(--accent);
+ font-family: "Poppins", sans-serif;
+ text-transform: uppercase;
+ letter-spacing: 0.06em;
+ line-height: 1.3;
+ }
+ .grid-2 {
+ display: grid;
+ grid-template-columns: repeat(2, 1fr);
+ gap: 12px 20px;
+ }
+ @media (max-width: 640px) {
+ .grid-2 { grid-template-columns: 1fr; }
+ .form-body { padding: 16px; }
+ .top-bar { flex-direction: column; align-items: stretch; }
+ .nav-tabs { justify-content: stretch; }
+ .nav-tabs button { flex: 1; }
+ }
+ .field-row {
+ display: grid;
+ grid-template-columns: minmax(130px, auto) 1fr;
+ align-items: center;
+ gap: 8px 12px;
+ min-height: 36px;
+ }
+ .field-row.field-row--stack {
+ grid-template-columns: 1fr;
+ align-items: start;
+ }
+ .field-row label.field-label {
+ font-size: 11px;
+ font-weight: 600;
+ color: var(--text-muted);
+ text-transform: uppercase;
+ letter-spacing: 0.03em;
+ }
+ .field-row .field-input {
+ display: flex;
+ flex-wrap: wrap;
+ align-items: center;
+ gap: 8px;
+ }
+ input[type="text"],
+ input[type="number"],
+ input[type="date"],
+ textarea,
+ select {
+ border: 1px solid var(--border);
+ border-radius: var(--radius-sm);
+ padding: 8px 10px;
+ font-size: 13px;
+ font-family: inherit;
+ color: var(--text);
+ background: var(--surface);
+ transition: border-color 0.15s, box-shadow 0.15s;
+ }
+ input:focus, textarea:focus, select:focus {
+ outline: none;
+ border-color: var(--primary);
+ box-shadow: 0 0 0 3px rgba(104, 7, 249, 0.15);
+ }
+ input[type="text"].grow, .field-input .grow { flex: 1; min-width: 0; width: 100%; }
+ input.short { width: 72px; }
+ input.medium { width: 140px; }
+ textarea {
+ width: 100%;
+ min-height: 88px;
+ resize: vertical;
+ line-height: 1.5;
+ }
+ .choice-panel {
+ background: var(--surface-alt);
+ border: 1px solid var(--border);
+ border-radius: var(--radius-sm);
+ padding: 12px 14px;
+ }
+ .choice-panel > strong {
+ display: block;
+ font-size: 10px;
+ text-transform: uppercase;
+ letter-spacing: 0.08em;
+ color: var(--text-muted);
+ margin-bottom: 10px;
+ }
+ .checkbox-group, .radio-group {
+ display: grid;
+ grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+ gap: 8px;
+ }
+ .checkbox-group label, .radio-group label {
+ display: flex;
+ align-items: flex-start;
+ gap: 8px;
+ padding: 10px 12px;
+ font-size: 12px;
+ font-weight: 500;
+ line-height: 1.35;
+ cursor: pointer;
+ background: var(--surface);
+ border: 1px solid var(--border);
+ border-radius: var(--radius-sm);
+ transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
+ }
+ .checkbox-group label:hover, .radio-group label:hover {
+ border-color: var(--border-strong);
+ }
+ .checkbox-group label:has(:checked),
+ .radio-group label:has(:checked) {
+ border-color: var(--primary);
+ background: var(--primary-soft);
+ box-shadow: 0 0 0 1px var(--primary);
+ }
+ .checkbox-group input, .radio-group input {
+ margin-top: 2px;
+ accent-color: var(--primary);
+ flex-shrink: 0;
+ }
+ .checkbox-group--inline {
+ display: flex;
+ flex-wrap: wrap;
+ gap: 8px;
+ }
+ .checkbox-group--inline label { min-width: auto; }
+ .note-box {
+ background: #fffbeb;
+ border: 1px solid #f0d78c;
+ border-left: 4px solid #e6a817;
+ border-radius: var(--radius-sm);
+ padding: 12px 14px;
+ margin: 12px 0;
+ font-size: 12px;
+ color: #6b5a20;
+ line-height: 1.45;
+ }
+ .note-box strong { color: #8b6914; }
+ .info-list {
+ margin: 10px 0 0;
+ padding: 12px 14px 12px 28px;
+ background: var(--surface-alt);
+ border-radius: var(--radius-sm);
+ font-size: 12px;
+ color: var(--text-muted);
+ line-height: 1.6;
+ }
+ table.options-table {
+ width: 100%;
+ border-collapse: separate;
+ border-spacing: 0;
+ font-size: 12px;
+ border-radius: var(--radius-sm);
+ overflow: hidden;
+ border: 1px solid var(--border);
+ }
+ table.options-table thead th {
+ background: var(--primary);
+ color: #fff;
+ font-size: 10px;
+ font-weight: 600;
+ text-transform: uppercase;
+ letter-spacing: 0.05em;
+ padding: 10px 12px;
+ text-align: left;
+ }
+ table.options-table tbody td {
+ border-top: 1px solid var(--border);
+ padding: 10px 12px;
+ vertical-align: middle;
+ background: var(--surface);
+ }
+ table.options-table tbody tr:nth-child(even) td { background: var(--surface-alt); }
+ table.options-table tbody tr:hover td { background: var(--primary-soft); }
+ table.options-table td.qty {
+ width: 100px;
+ text-align: center;
+ white-space: nowrap;
+ }
+ table.options-table input[type="number"],
+ table.options-table input[type="text"] {
+ width: 56px;
+ text-align: center;
+ padding: 6px;
+ }
+ table.kat-isimleri { border: none; }
+ table.kat-isimleri td {
+ padding: 4px;
+ border: none;
+ background: transparent !important;
+ }
+ table.kat-isimleri input {
+ width: 100%;
+ text-align: center;
+ font-size: 11px;
+ padding: 6px 4px;
+ }
+ .butonyer-block {
+ border: 1px solid var(--border);
+ border-radius: var(--radius-sm);
+ padding: 16px;
+ margin-bottom: 12px;
+ background: var(--surface-alt);
+ }
+ .butonyer-block h4 {
+ margin: 0 0 12px;
+ font-size: 12px;
+ font-weight: 700;
+ color: var(--primary);
+ }
+ .footnotes {
+ font-size: 11px;
+ color: var(--text-muted);
+ margin-top: 20px;
+ padding: 16px;
+ background: var(--surface-alt);
+ border-radius: var(--radius-sm);
+ border: 1px dashed var(--border-strong);
+ }
+ .footnotes ol { margin: 0; padding-left: 20px; }
+ .footnotes li { margin-bottom: 4px; }
+ @media print {
+ body { background: #fff; }
+ .no-print, .fiyat-panel { display: none !important; }
+ .app-layout { grid-template-columns: 1fr; }
+ .app { max-width: none; padding: 0; }
+ .page-panel { display: block !important; page-break-after: always; }
+ .form-page { box-shadow: none; border: 1px solid #ccc; border-radius: 0; }
+ .checkbox-group label, .radio-group label {
+ border: 1px solid #ccc;
+ break-inside: avoid;
+ }
+ .section { break-inside: avoid; }
+ }
+ </style>
+</head>
+<body>
+
+<div class="app">
+
+ <div class="top-bar no-print">
+ <div class="brand">
+ <img src="asia-otomasyon-logo-renkli.png" alt="Asia Otomasyon" width="120" height="40">
+ <div class="brand-text">
+ Asia Otomasyon
+ <span>ARCODE Teklif / Sipariş Formu</span>
+ </div>
+ </div>
+ <div class="nav-tabs">
+ <button type="button" class="active" data-tab="page1">Sayfa 1 - ARCODE Kumanda</button>
+ <button type="button" data-tab="page2">Sayfa 2 - Butonyer</button>
+ </div>
+ <div class="actions">
+ <button type="button" onclick="window.print()">Yazdır / PDF</button>
+ <button type="button" class="secondary" onclick="document.getElementById('arcodeForm').reset()">Formu Temizle</button>
+ </div>
+ </div>
+
+ <div class="app-layout">
+ <div class="form-column">
+ <form id="arcodeForm" action="#" method="post">
+
+ <!-- ==================== SAYFA 1 - ARCODE KUMANDA ==================== -->
+ <div id="page1" class="page-panel active">
+ <div class="form-page">
+ <header class="company">
+ <div class="sirket-bilgi">
+ <img src="asia-otomasyon-logo-beyaz.png" alt="Asia Otomasyon" width="160" height="56">
+ <h1>Asia Otomasyon</h1>
+ <div class="contact">
+ Tel: +90 216 334 45 66 &nbsp;·&nbsp;
+ <a href="mailto:info@asiaotomasyon.com">info@asiaotomasyon.com</a> &nbsp;·&nbsp;
+ <a href="https://www.asiaotomasyon.com">www.asiaotomasyon.com</a><br>
+ İstanbul / Türkiye
+ </div>
+ </div>
+ <p class="form-subtitle">ARCODE Kumanda Sistemi Teklif / Sipariş Formu</p>
+ <span class="badge">KESİN SİPARİŞ / TEKLİF TALEBİ</span>
+ </header>
+
+ <div class="form-body">
+ <h2 class="page-title">ARCODE Kumanda Sistemi Teklif / Sipariş Formu</h2>
+
+ <section class="section">
+ <h3 class="section-title">Genel Bilgiler</h3>
+ <div class="grid-2">
+ <div class="field-row">
+ <label class="field-label" for="firma">FİRMA:</label>
+ <div class="field-input">
+ <input type="text" id="firma" name="firma" class="grow">
+ </div>
+ </div>
+ <div class="field-row">
+ <label class="field-label" for="adet">ADET:</label>
+ <div class="field-input">
+ <input type="number" id="adet" name="adet" class="short" min="1">
+ </div>
+ </div>
+ <div class="field-row">
+ <label class="field-label" for="siparis_no">SİPARİŞ NO:</label>
+ <div class="field-input">
+ <input type="text" id="siparis_no" name="siparis_no" class="grow">
+ </div>
+ </div>
+ <div class="field-row">
+ <label class="field-label" for="durak_sayisi">DURAK SAYISI:</label>
+ <div class="field-input">
+ <input type="number" id="durak_sayisi" name="durak_sayisi" class="short" min="1" max="64">
+ </div>
+ </div>
+ <div class="field-row">
+ <label class="field-label" for="siparis_tarihi">SİPARİŞ TARİHİ:</label>
+ <div class="field-input">
+ <input type="date" id="siparis_tarihi" name="siparis_tarihi">
+ </div>
+ </div>
+ <div class="field-row">
+ <label class="field-label">ŞEBEKE GERİLİMİ:</label>
+ <div class="field-input">
+ <input type="text" name="sebeke_gerilimi" class="short" placeholder="VAC">
+ <span>VAC (Faz-Faz)</span>
+ <span class="radio-group checkbox-group--inline">
+ <label><input type="radio" name="sebeke_faz" value="A"> A</label>
+ <label><input type="radio" name="sebeke_faz" value="B"> B</label>
+ </span>
+ </div>
+ </div>
+ <div class="field-row">
+ <label class="field-label" for="teslim_tarihi">İSTENİLEN TESLİM TARİHİ:</label>
+ <div class="field-input">
+ <input type="date" id="teslim_tarihi" name="teslim_tarihi">
+ </div>
+ </div>
+ <div class="field-row">
+ <label class="field-label">Nötr:</label>
+ <div class="field-input">
+ <span class="radio-group checkbox-group--inline">
+ <label><input type="radio" name="notr" value="var"> Var</label>
+ <label><input type="radio" name="notr" value="yok"> Yok</label>
+ </span>
+ </div>
+ </div>
+ <div class="field-row">
+ <label class="field-label" for="musteri_ref">MÜŞTERİ REFERANSI:</label>
+ <div class="field-input">
+ <input type="text" id="musteri_ref" name="musteri_referansi" class="grow">
+ </div>
+ </div>
+ <div class="field-row">
+ <label class="field-label" for="kurulum_ulke">KURULUM YAPILACAK ÜLKE:</label>
+ <div class="field-input">
+ <input type="text" id="kurulum_ulke" name="kurulum_ulke" class="grow">
+ </div>
+ </div>
+ <div class="field-row">
+ <label class="field-label">KABİN HIZI:</label>
+ <div class="field-input">
+ <input type="text" name="kabin_hizi" class="short" placeholder="m/s">
+ <span>m/s (max. 4 m/s)</span>
+ </div>
+ </div>
+ </div>
+ </section>
+
+ <section class="section">
+ <h3 class="section-title">Dil &amp; Standart</h3>
+ <div class="grid-2">
+ <div class="choice-panel">
+ <strong>Dil</strong>
+ <div class="checkbox-group">
+ <label><input type="checkbox" name="dil" value="turkce"> TÜRKÇE</label>
+ <label><input type="checkbox" name="dil" value="ingilizce"> İNGİLİZCE</label>
+ <label><input type="checkbox" name="dil" value="fransizca"> FRANSIZCA</label>
+ <label><input type="checkbox" name="dil" value="rusca"> RUSÇA</label>
+ </div>
+ </div>
+ <div class="choice-panel">
+ <strong>Standart</strong>
+ <div class="checkbox-group">
+ <label><input type="checkbox" name="standart" value="en81-12"> EN81-1/2</label>
+ <label><input type="checkbox" name="standart" value="en81-12a3"> EN81-1/2+A3</label>
+ <label><input type="checkbox" name="standart" value="en81-21"> EN81-21</label>
+ <label><input type="checkbox" name="standart" value="gost-r"> GOST-R</label>
+ <label><input type="checkbox" name="standart" value="en81-70"> EN81-70</label>
+ <label><input type="checkbox" name="standart" value="en81-72"> EN81-72</label>
+ </div>
+ </div>
+ </div>
+ </section>
+
+ <section class="section">
+ <h3 class="section-title">Grup Kumanda</h3>
+ <div class="checkbox-group">
+ <label><input type="radio" name="grup_kumanda" value="tek_buton"> Tek Buton Toplamalı</label>
+ <label><input type="radio" name="grup_kumanda" value="cift_buton"> Çift Buton Toplamalı</label>
+ </div>
+ <div class="grid-2" style="margin-top:12px">
+ <div class="field-row">
+ <label class="field-label">Gruptaki Asansör Sayısı (Max.8):</label>
+ <div class="field-input">
+ <input type="number" name="grup_asansor_sayisi" class="short" min="1" max="8">
+ </div>
+ </div>
+ <div class="field-row">
+ <label class="field-label">Katlardaki Butonyer Sayısı:</label>
+ <div class="field-input">
+ <input type="number" name="kat_butonyer_sayisi" class="short" min="0">
+ </div>
+ </div>
+ </div>
+ </section>
+
+ <section class="section">
+ <h3 class="section-title">Motor Bilgileri</h3>
+ <div class="checkbox-group">
+ <label><input type="radio" name="motor_tip" value="vvvf_asenkron"> VVVF Asenkron (Dişlili)</label>
+ <label><input type="radio" name="motor_tip" value="senkron"> Senkron (Dişlisiz)</label>
+ </div>
+ <div class="note-box">
+ <strong>*</strong> ARCODE yalnızca kapalı çevrim çalışır.<br>
+ <strong>*</strong> ARCODE yalnızca VVVF sistemler için kullanılabilir.
+ </div>
+ <div class="grid-2">
+ <div class="field-row">
+ <label class="field-label">Motor Gücü:</label>
+ <div class="field-input">
+ <input type="text" name="motor_gucu_kw" class="short">
+ <span>kW</span>
+ </div>
+ </div>
+ <div class="field-row">
+ <label class="field-label">Motor Akımı:</label>
+ <div class="field-input">
+ <input type="text" name="motor_akimi" class="short">
+ <span>A</span>
+ </div>
+ </div>
+ <div class="field-row">
+ <label class="field-label">Motor Marka/Model:</label>
+ <div class="field-input">
+ <input type="text" name="motor_marka" class="grow">
+ </div>
+ </div>
+ <div class="field-row">
+ <label class="field-label">Encoder Marka-Model:</label>
+ <div class="field-input">
+ <input type="text" name="encoder" class="grow">
+ </div>
+ </div>
+ <div class="field-row field-row--stack">
+ <label class="field-label">Fren Voltajı/Akımı:</label>
+ <div class="field-input">
+ <span>VDC:</span>
+ <input type="text" name="fren_vdc" class="short">
+ <span>VAC:</span>
+ <input type="text" name="fren_vac" class="short">
+ <span>A:</span>
+ <input type="text" name="fren_a" class="short">
+ </div>
+ </div>
+ </div>
+ <div class="checkbox-group" style="margin-top:10px">
+ <label><input type="checkbox" name="motor_ops" value="manuel_fren"> Manuel Fren Açtırma (Sadece Dişlisiz)</label>
+ <label><input type="checkbox" name="motor_ops" value="aktif_surme"> Aktif Motor Sürme</label>
+ <label><input type="checkbox" name="motor_ops" value="lir_pomp"> LIR-POMP</label>
+ <label><input type="checkbox" name="motor_ops" value="belirli_kat_ups_musteri"> Belirli Kata Aktif Motor Sürme (UPS Müşteriye ait)</label>
+ <label><input type="checkbox" name="motor_ops" value="belirli_kat_ups_arkel"> Belirli Kata Aktif Motor Sürme (UPS Asia Otomasyon'a ait)</label>
+ </div>
+ </section>
+
+ <section class="section">
+ <h3 class="section-title">Kapı Kumandası</h3>
+ <div class="checkbox-group">
+ <label><input type="radio" name="kapi_kombinasyon" value="kat_manuel_kabin_yok"> Kat Manuel + Kabin Yok</label>
+ <label><input type="radio" name="kapi_kombinasyon" value="kat_manuel_kabin_manuel"> Kat Manuel + Kabin Manuel</label>
+ <label><input type="radio" name="kapi_kombinasyon" value="kat_manuel_kabin_otomatik"> Kat Manuel + Kabin Otomatik</label>
+ <label><input type="radio" name="kapi_kombinasyon" value="kat_otomatik_kabin_otomatik"> Kat Otomatik + Kabin Otomatik</label>
+ </div>
+ <div class="grid-2" style="margin-top:12px">
+ <div class="field-row">
+ <label class="field-label">Otomatik kapı markası:</label>
+ <div class="field-input">
+ <input type="text" name="otomatik_kapi_marka" class="grow">
+ </div>
+ </div>
+ <div class="field-row">
+ <label class="field-label">Otomatik kapı modeli:</label>
+ <div class="field-input">
+ <input type="text" name="otomatik_kapi_model" class="grow">
+ </div>
+ </div>
+ </div>
+ <div class="checkbox-group" style="margin-top:10px">
+ <label><input type="radio" name="otomatik_kapi_tip" value="yok"> Yok</label>
+ <label><input type="radio" name="otomatik_kapi_tip" value="1faz_mekanik"> 1 Faz Mekanik - VAC (Motor Voltajı)</label>
+ <label><input type="radio" name="otomatik_kapi_tip" value="3faz_mekanik"> 3 Faz Mekanik - VAC (Motor Voltajı)</label>
+ <label><input type="radio" name="otomatik_kapi_tip" value="kontrol_kartli"> Kontrol Kartlı</label>
+ <label><input type="radio" name="otomatik_kapi_tip" value="vvvf_invertorlu"> VVVF İnvertörlü</label>
+ </div>
+ <div class="field-row" style="margin-top:10px">
+ <label class="field-label">Fren / kapı:</label>
+ <div class="field-input">
+ <span class="checkbox-group checkbox-group--inline">
+ <label><input type="checkbox" name="fren_tip" value="mekanik"> Mekanik</label>
+ <label><input type="checkbox" name="fren_tip" value="elektrikli"> Elektrikli</label>
+ </span>
+ <span>VDC:</span>
+ <input type="text" name="kapi_fren_vdc" class="short">
+ <span>VAC:</span>
+ <input type="text" name="kapi_fren_vac" class="short">
+ <span>A:</span>
+ <input type="text" name="kapi_fren_a" class="short">
+ </div>
+ </div>
+ </section>
+
+ <section class="section">
+ <h3 class="section-title">Makine Dairesi</h3>
+ <div class="checkbox-group">
+ <label><input type="radio" name="makine_dairesi" value="var"> Makine Dairesi VAR</label>
+ <label><input type="radio" name="makine_dairesi" value="mrl"> Makine Dairesi YOK (MRL)</label>
+ </div>
+ <div class="checkbox-group" style="margin-top:10px">
+ <label><input type="checkbox" name="fren_montaj" value="senkron_blok"> Senkron Makine Fren Blokları Üzerinden</label>
+ <label><input type="checkbox" name="fren_montaj" value="asenkron_kasnak"> Asenkron Makine Kasnak Freni ile</label>
+ <label><input type="checkbox" name="fren_montaj" value="halat_tutma"> Halat Tutma Tertibatı ile</label>
+ <label><input type="checkbox" name="fren_montaj" value="hiz_reg_parasut"> Hız regülatörü + Paraşüt Fren Üzerinden</label>
+ </div>
+ </section>
+
+ <section class="section">
+ <h3 class="section-title">Kumanda Tipi</h3>
+ <div class="checkbox-group">
+ <label><input type="radio" name="kumanda_yer" value="panoda"> 1) Arcode Kumanda Panosunda (400 x 2100 x 250 mm)</label>
+ <label><input type="radio" name="kumanda_yer" value="kuyuda"> 2) Arcode Kuyuda (Kapı Kasası Tipi Servis Paneli)</label>
+ </div>
+ <ul class="info-list">
+ <li><strong>a)</strong> Servis Panosu Tabansacı: 100x1910 mm</li>
+ <li><strong>b)</strong> Servis Panosu: 110x2100x132 mm</li>
+ <li>Kuyu Panosu: 1020x510x250 mm (14-17-26A) / 1200x600x250 mm (35-50A)</li>
+ </ul>
+ <div class="field-row" style="margin-top:12px">
+ <label class="field-label">Kuyu Panosu ile Kapı Kasası Servis Paneli arası mesafe:</label>
+ <div class="field-input">
+ <input type="text" name="kuyu_pano_mesafe" class="short">
+ <span>m</span>
+ </div>
+ </div>
+ </section>
+
+ <section class="section">
+ <h3 class="section-title">A3 Uygulaması &amp; Hız Regülatörü</h3>
+ <div class="grid-2">
+ <div class="field-row">
+ <label class="field-label">A3 Hız Regülatörü Markası:</label>
+ <div class="field-input">
+ <input type="text" name="a3_marka" class="medium">
+ </div>
+ </div>
+ <div class="field-row">
+ <label class="field-label">Model:</label>
+ <div class="field-input">
+ <input type="text" name="a3_model" class="medium">
+ </div>
+ </div>
+ <div class="field-row">
+ <label class="field-label">24VDC:</label>
+ <div class="field-input">
+ <span class="radio-group checkbox-group--inline">
+ <label><input type="radio" name="a3_24vdc" value="var"> Var</label>
+ <label><input type="radio" name="a3_24vdc" value="yok"> Yok</label>
+ </span>
+ <span>A:</span>
+ <input type="text" name="a3_24vdc_a" class="short" placeholder="Max 6A">
+ </div>
+ </div>
+ <div class="field-row">
+ <label class="field-label">Aşırı Hız Regülatörü Markası:</label>
+ <div class="field-input">
+ <input type="text" name="asiri_hiz_marka" class="grow">
+ </div>
+ </div>
+ <div class="field-row field-row--stack">
+ <label class="field-label">Set Butonu Bobin:</label>
+ <div class="field-input">
+ <span>VDC:</span>
+ <input type="text" name="set_vdc" class="short">
+ <span>VAC:</span>
+ <input type="text" name="set_vac" class="short">
+ <span>A:</span>
+ <input type="text" name="set_a" class="short">
+ </div>
+ </div>
+ <div class="field-row field-row--stack">
+ <label class="field-label">Reset Butonu Bobin:</label>
+ <div class="field-input">
+ <span>VDC:</span>
+ <input type="text" name="reset_vdc" class="short">
+ <span>VAC:</span>
+ <input type="text" name="reset_vac" class="short">
+ <span>A:</span>
+ <input type="text" name="reset_a" class="short">
+ </div>
+ </div>
+ </div>
+ <div class="checkbox-group" style="margin-top:10px">
+ <label><input type="checkbox" name="asiri_hiz_btn" value="set_reset"> Aşırı Hız Regülatörü Set ve Reset Butonları</label>
+ </div>
+ </section>
+
+ <section class="section">
+ <h3 class="section-title">Kuyu Bilgisi</h3>
+ <div class="grid-2">
+ <div class="field-row">
+ <label class="field-label">Seyir Mesafesi:</label>
+ <div class="field-input">
+ <input type="text" name="seyir_mesafesi" class="short">
+ <span>m</span>
+ </div>
+ </div>
+ <div class="field-row">
+ <label class="field-label">Kuyu Dibi Yüksekliği:</label>
+ <div class="field-input">
+ <input type="text" name="kuyu_dibi" class="short">
+ <span>m</span>
+ <label><input type="checkbox" name="kuyu_dibi_tip" value="kisa"> Kısa Kuyu Dibi</label>
+ </div>
+ </div>
+ <div class="field-row">
+ <label class="field-label">Üst Kat Yüksekliği:</label>
+ <div class="field-input">
+ <input type="text" name="ust_kat" class="short">
+ <span>m</span>
+ <label><input type="checkbox" name="kuyu_ust_tip" value="kisa"> Kısa Kuyu Üstü</label>
+ </div>
+ </div>
+ <div class="field-row">
+ <label class="field-label">Kuyu Boyu:</label>
+ <div class="field-input">
+ <input type="text" name="kuyu_boyu" class="short">
+ <span>m</span>
+ </div>
+ </div>
+ <div class="field-row field-row--stack">
+ <label class="field-label">Katlar arası mesafe:</label>
+ <div class="field-input">
+ <label><input type="radio" name="kat_arasi" value="standart_3m" checked> standart 3 m</label>
+ <label><input type="radio" name="kat_arasi" value="diger"> Diğer:</label>
+ <input type="text" name="kat_arasi_diger" class="short">
+ </div>
+ </div>
+ <div class="field-row">
+ <label class="field-label">Seviye Yenileme:</label>
+ <div class="field-input">
+ <label><input type="radio" name="seviye_yenileme" value="evet"> Evet</label>
+ <label><input type="radio" name="seviye_yenileme" value="hayir"> Hayır</label>
+ </div>
+ </div>
+ <div class="field-row">
+ <label class="field-label">Kapı Erken Açma:</label>
+ <div class="field-input">
+ <label><input type="radio" name="kapi_erken" value="evet"> Evet</label>
+ <label><input type="radio" name="kapi_erken" value="hayir"> Hayır</label>
+ </div>
+ </div>
+ <div class="field-row">
+ <label class="field-label">Son kat kumanda panosu arası mesafe:</label>
+ <div class="field-input">
+ <input type="text" name="son_kat_pano_mesafe" class="short">
+ <span>m</span>
+ </div>
+ </div>
+ </div>
+ </section>
+
+ <section class="section">
+ <h3 class="section-title">Opsiyonlar</h3>
+ <table class="options-table">
+ <thead>
+ <tr><th>Seçenek</th><th class="qty">Adet / Not</th></tr>
+ </thead>
+ <tbody>
+ <tr><td><label><input type="checkbox" name="ops" value="cop_lop_lip"> COP / LOP / LIP</label></td><td class="qty"><input type="text" name="ops_cop_adet" placeholder="ad"></td></tr>
+ <tr><td><label><input type="checkbox" name="ops" value="arem"> AREM (Uzaktan Erişim Terminali)</label></td><td class="qty"><input type="text" name="ops_arem_adet"></td></tr>
+ <tr><td><label><input type="checkbox" name="ops" value="paslanmaz"> Paslanmaz Kaplama Pano</label></td><td class="qty"></td></tr>
+ <tr><td><label><input type="checkbox" name="ops" value="pano_sehpasi"> Pano Sehpası</label></td><td class="qty"></td></tr>
+ <tr><td><label><input type="checkbox" name="ops" value="paralel_16"> Kat ve Kabin Kaseti Paralel Tesisat (max. 16 durak)</label></td><td class="qty"></td></tr>
+ <tr><td><label><input type="checkbox" name="ops" value="canbus_arkel"> Kat ve Kabin Kaseti CANbus seri, Kasetler Asia Otomasyon temini</label></td><td class="qty"></td></tr>
+ <tr><td><label><input type="checkbox" name="ops" value="canbus_gosterge"> CANbus seri Tesisat yalnızca Gösterge</label></td><td class="qty"></td></tr>
+ <tr><td><label><input type="checkbox" name="ops" value="graycode_kabin"> Extra Graycode Çıkış - Kabin</label> / <label><input type="checkbox" name="ops" value="graycode_kat"> Kat</label></td><td class="qty"></td></tr>
+ <tr><td><label><input type="checkbox" name="ops" value="binarycode_kabin"> Extra Binarycode Çıkış - Kabin</label> / <label><input type="checkbox" name="ops" value="binarycode_kat"> Kat</label></td><td class="qty"></td></tr>
+ <tr><td><label><input type="checkbox" name="ops" value="gz_plus"> G&amp;Z Plus Sesli Anons ve Müzik Sistemi</label></td><td class="qty"></td></tr>
+ <tr><td><label><input type="checkbox" name="ops" value="sok_bobini"> AC Giriş Şok Bobini</label></td><td class="qty"></td></tr>
+ <tr><td><label><input type="checkbox" name="ops" value="canbus_tesisat"> CANbus tesisatı - COP / LOP / LIP</label></td><td class="qty"></td></tr>
+ <tr><td><label><input type="checkbox" name="ops" value="kapi_kontak"> Kapı kontak tesisatı (Fiş-kilit)</label></td><td class="qty"></td></tr>
+ <tr><td><label><input type="checkbox" name="ops" value="kuyu_aydinlatma"> Kuyu Aydınlatma</label></td><td class="qty"></td></tr>
+ </tbody>
+ </table>
+ <p class="note-box">Lütfen 2. sayfadaki <strong>butonyer sipariş formunu</strong> doldurunuz. Gösterge seçimlerinizi aşağıda belirtiniz.</p>
+ </section>
+
+ <section class="section">
+ <h3 class="section-title">Gösterge Seçeneği (Kata Getirme)</h3>
+ <table class="options-table">
+ <thead>
+ <tr><th>Gösterge tipi</th><th>Katlar</th><th>Kabin Girişleri</th></tr>
+ </thead>
+ <tbody>
+ <tr>
+ <td>BC-D2XA (2x30 mm DOTMATRIX)</td>
+ <td class="qty"><input type="number" name="gosterge_d2xa_kat" min="0" class="short"></td>
+ <td class="qty"><input type="number" name="gosterge_d2xa_kabin" min="0" class="short"></td>
+ </tr>
+ <tr>
+ <td>BC-D3XA (3x30 mm DOTMATRIX)</td>
+ <td class="qty"><input type="number" name="gosterge_d3xa_kat" min="0"></td>
+ <td class="qty"><input type="number" name="gosterge_d3xa_kabin" min="0"></td>
+ </tr>
+ <tr>
+ <td>BC-LCDA (70x40 mm LCD)</td>
+ <td class="qty"><input type="number" name="gosterge_lcda_kat" min="0"></td>
+ <td class="qty"><input type="number" name="gosterge_lcda_kabin" min="0"></td>
+ </tr>
+ <tr>
+ <td>BC-LCD240X128A-S (114x64 mm LCD)</td>
+ <td class="qty"><input type="number" name="gosterge_lcd128_kat" min="0"></td>
+ <td class="qty"><input type="number" name="gosterge_lcd128_kabin" min="0"></td>
+ </tr>
+ <tr>
+ <td>LIFTMEDIA-S (5.7'' TFT)</td>
+ <td class="qty"><input type="number" name="gosterge_liftmedia_kat" min="0"></td>
+ <td class="qty"><input type="number" name="gosterge_liftmedia_kabin" min="0"></td>
+ </tr>
+ </tbody>
+ </table>
+ </section>
+
+ <section class="section">
+ <h3 class="section-title">Kuyu Tesisatı</h3>
+ <table class="options-table">
+ <tbody>
+ <tr>
+ <td>Kabin tesisatı (Fleksibıl kablo)</td>
+ <td class="qty"><input type="number" name="tesisat_kabin" min="0" step="0.1"> m</td>
+ </tr>
+ <tr>
+ <td>Extra - Kabin tesisatı (Fleksibıl kablo)</td>
+ <td class="qty"><input type="number" name="tesisat_extra_kabin" min="0" step="0.1"> m</td>
+ </tr>
+ <tr>
+ <td>Halogen Free - Kabin tesisatı</td>
+ <td class="qty"><input type="checkbox" name="tesisat_hf"></td>
+ </tr>
+ <tr>
+ <td>Kuyu dibi tesisatı</td>
+ <td class="qty"><input type="number" name="tesisat_kuyu_dibi" min="0" step="0.1"> m</td>
+ </tr>
+ <tr>
+ <td>Kablo Kanalı (60x40 mm Kapalı)</td>
+ <td class="qty"><input type="number" name="tesisat_kanal" min="0" step="0.1"> m</td>
+ </tr>
+ </tbody>
+ </table>
+ </section>
+
+ <section class="section">
+ <h3 class="section-title">Açıklama</h3>
+ <div class="field-row field-row--stack">
+ <label class="field-label" for="aciklama_p1">Açıklama:</label>
+ <div class="field-input">
+ <textarea id="aciklama_p1" name="aciklama_sayfa1" rows="4"></textarea>
+ </div>
+ </div>
+ </section>
+
+ </div>
+ </div>
+ </div>
+
+ <!-- ==================== SAYFA 2 - BUTONYER ==================== -->
+ <div id="page2" class="page-panel">
+ <div class="form-page">
+ <header class="company">
+ <div class="sirket-bilgi">
+ <img src="asia-otomasyon-logo-beyaz.png" alt="Asia Otomasyon" width="160" height="56">
+ <h1>Asia Otomasyon</h1>
+ <div class="contact">
+ Tel: +90 216 334 45 66 &nbsp;·&nbsp;
+ <a href="mailto:info@asiaotomasyon.com">info@asiaotomasyon.com</a> &nbsp;·&nbsp;
+ <a href="https://www.asiaotomasyon.com">www.asiaotomasyon.com</a><br>
+ İstanbul / Türkiye
+ </div>
+ </div>
+ <p class="form-subtitle">Butonyer Teklif / Sipariş Formu</p>
+ <span class="badge">KESİN SİPARİŞ / TEKLİF TALEBİ</span>
+ </header>
+
+ <div class="form-body">
+ <h2 class="page-title">Butonyer Teklif / Sipariş Formu</h2>
+
+ <section class="section">
+ <h3 class="section-title">Sipariş Bilgileri</h3>
+ <div class="grid-2">
+ <div class="field-row">
+ <label class="field-label" for="firma_p2">FİRMA:</label>
+ <div class="field-input">
+ <input type="text" id="firma_p2" name="firma_p2" class="grow">
+ </div>
+ </div>
+ <div class="field-row">
+ <label class="field-label" for="siparis_no_p2">SİPARİŞ NO:</label>
+ <div class="field-input">
+ <input type="text" id="siparis_no_p2" name="siparis_no_p2" class="grow">
+ </div>
+ </div>
+ <div class="field-row">
+ <label class="field-label" for="siparis_tarihi_p2">SİPARİŞ TARİHİ:</label>
+ <div class="field-input">
+ <input type="date" id="siparis_tarihi_p2" name="siparis_tarihi_p2">
+ </div>
+ </div>
+ <div class="field-row">
+ <label class="field-label" for="teslim_p2">İSTENİLEN TESLİM TARİHİ:</label>
+ <div class="field-input">
+ <input type="date" id="teslim_p2" name="teslim_tarihi_p2">
+ </div>
+ </div>
+ <div class="field-row">
+ <label class="field-label" for="musteri_ref_p2">MÜŞTERİ REFERANSI:</label>
+ <div class="field-input">
+ <input type="text" id="musteri_ref_p2" name="musteri_referansi_p2" class="grow">
+ </div>
+ </div>
+ </div>
+ </section>
+
+ <section class="section">
+ <h3 class="section-title">Kabin Özellikleri</h3>
+ <div class="grid-2">
+ <div class="field-row">
+ <label class="field-label">ÜRETİCİ FİRMA:</label>
+ <div class="field-input">
+ <input type="text" name="uretici_firma" class="grow">
+ </div>
+ </div>
+ <div class="field-row">
+ <label class="field-label">ÜRETİCİ FİRMA REFERANSI:</label>
+ <div class="field-input">
+ <input type="text" name="uretici_referans" class="grow">
+ </div>
+ </div>
+ </div>
+ </section>
+
+ <section class="section">
+ <h3 class="section-title">Kabinde Buton Modeli</h3>
+ <div class="checkbox-group">
+ <label><input type="radio" name="kabin_buton" value="kirmizi"> KIRMIZI (STANDART)</label>
+ <label><input type="radio" name="kabin_buton" value="diger"> DİĞER:</label>
+ </div>
+ <div class="field-row" style="margin-top:8px">
+ <label class="field-label"></label>
+ <div class="field-input">
+ <input type="text" name="kabin_buton_diger" class="medium">
+ </div>
+ </div>
+ <div class="checkbox-group" style="margin-top:10px">
+ <label><input type="checkbox" name="kabin_buton_model" value="k1_ens"> K1-ENS BR</label>
+ <label><input type="checkbox" name="kabin_buton_model" value="v2_p"> V2-P BR</label>
+ <label><input type="checkbox" name="kabin_buton_model" value="f6_lens"> F6-LENS</label>
+ <label><input type="checkbox" name="kabin_buton_model" value="k1_enp"> K1-ENP BR</label>
+ <label><input type="checkbox" name="kabin_buton_model" value="v3_ens"> V3-ENS BR</label>
+ <label><input type="checkbox" name="kabin_buton_model" value="f6_lenp"> F6-LENP</label>
+ <label><input type="checkbox" name="kabin_buton_model" value="v3_enp"> V3-ENP BR</label>
+ </div>
+ </section>
+
+ <section class="section">
+ <h3 class="section-title">Katlarda Buton Modeli</h3>
+ <div class="checkbox-group">
+ <label><input type="radio" name="kat_buton" value="kirmizi"> KIRMIZI (STANDART)</label>
+ <label><input type="radio" name="kat_buton" value="diger"> DİĞER:</label>
+ </div>
+ <div class="field-row" style="margin-top:8px">
+ <label class="field-label"></label>
+ <div class="field-input">
+ <input type="text" name="kat_buton_diger" class="medium">
+ </div>
+ </div>
+ <div class="checkbox-group" style="margin-top:10px">
+ <label><input type="checkbox" name="kat_buton_model" value="b3_ens"> B3-ENS BR</label>
+ <label><input type="checkbox" name="kat_buton_model" value="b3_enp"> B3-ENP BR</label>
+ <label><input type="checkbox" name="kat_buton_model" value="diger2"> DİĞER:</label>
+ </div>
+ <div class="field-row" style="margin-top:8px">
+ <label class="field-label"></label>
+ <div class="field-input">
+ <input type="text" name="kat_buton_model_diger" class="medium">
+ </div>
+ </div>
+ </section>
+
+ <section class="section">
+ <h3 class="section-title">Kat İsimleri</h3>
+ <table class="options-table kat-isimleri">
+ <tbody>
+ <tr>
+ <td><input type="text" name="kat_isim_1" maxlength="8" placeholder="1"></td>
+ <td><input type="text" name="kat_isim_2" maxlength="8"></td>
+ <td><input type="text" name="kat_isim_3" maxlength="8"></td>
+ <td><input type="text" name="kat_isim_4" maxlength="8"></td>
+ <td><input type="text" name="kat_isim_5" maxlength="8"></td>
+ <td><input type="text" name="kat_isim_6" maxlength="8"></td>
+ <td><input type="text" name="kat_isim_7" maxlength="8"></td>
+ <td><input type="text" name="kat_isim_8" maxlength="8"></td>
+ <td><input type="text" name="kat_isim_9" maxlength="8"></td>
+ <td><input type="text" name="kat_isim_10" maxlength="8"></td>
+ <td><input type="text" name="kat_isim_11" maxlength="8"></td>
+ <td><input type="text" name="kat_isim_12" maxlength="8"></td>
+ </tr>
+ <tr>
+ <td><input type="text" name="kat_isim_13" maxlength="8"></td>
+ <td><input type="text" name="kat_isim_14" maxlength="8"></td>
+ <td><input type="text" name="kat_isim_15" maxlength="8"></td>
+ <td><input type="text" name="kat_isim_16" maxlength="8"></td>
+ <td><input type="text" name="kat_isim_17" maxlength="8"></td>
+ <td><input type="text" name="kat_isim_18" maxlength="8"></td>
+ <td><input type="text" name="kat_isim_19" maxlength="8"></td>
+ <td><input type="text" name="kat_isim_20" maxlength="8"></td>
+ <td><input type="text" name="kat_isim_21" maxlength="8"></td>
+ <td><input type="text" name="kat_isim_22" maxlength="8"></td>
+ <td><input type="text" name="kat_isim_23" maxlength="8"></td>
+ <td><input type="text" name="kat_isim_24" maxlength="8"></td>
+ </tr>
+ </tbody>
+ </table>
+ </section>
+
+ <section class="section">
+ <h3 class="section-title">Kapak Tipi</h3>
+ <div class="checkbox-group">
+ <label><input type="checkbox" name="kapak" value="flexline"> FLEXLINE (1000 mm)</label>
+ <label><input type="checkbox" name="kapak" value="hp"> HP (1000 mm)</label>
+ <label><input type="checkbox" name="kapak" value="fhp"> FHP (2000 mm)</label>
+ <label><input type="checkbox" name="kapak" value="fhp_dp"> FHP-DP Düz Panel</label>
+ <label><input type="checkbox" name="kapak" value="fhp_bp"> FHP-BP Bükümlü Panel</label>
+ <label><input type="checkbox" name="kapak" value="fhp_mp"> FHP-MP Menteşeli Panel</label>
+ <label><input type="checkbox" name="kapak" value="shp"> SHP Özel Ölçülü Panel</label>
+ <label><input type="checkbox" name="kapak" value="belirtiniz"> BELİRTİNİZ:</label>
+ </div>
+ <div class="field-row" style="margin-top:8px">
+ <label class="field-label"></label>
+ <div class="field-input">
+ <input type="text" name="kapak_belirt" class="grow">
+ </div>
+ </div>
+ </section>
+
+ <section class="section">
+ <h3 class="section-title">Opsiyonlar (Kabin / Kapak)</h3>
+ <div class="checkbox-group">
+ <label><input type="checkbox" name="ops_p2" value="kimlik"> Kimlik Etiketi (Logo + Asansör Bilgileri)</label>
+ <label><input type="checkbox" name="ops_p2" value="yarim_panel"> Yarım Panel</label>
+ <label><input type="checkbox" name="ops_p2" value="hoparlor"> Müzik Yayını için Hoparlör</label>
+ <label><input type="checkbox" name="ops_p2" value="boy_panel"> Boy Panel</label>
+ <label><input type="checkbox" name="ops_p2" value="acil_aydinlatma"> Acil Aydınlatma</label>
+ <label><input type="checkbox" name="ops_p2" value="intercom_std"> Intercom Standart</label>
+ <label><input type="checkbox" name="ops_p2" value="intercom_ozel"> Intercom Özel:</label>
+ <label><input type="checkbox" name="ops_p2" value="telefon_yeri"> Telefon Yeri Hazırlanması</label>
+ </div>
+ <div class="field-row" style="margin-top:8px">
+ <label class="field-label">Intercom Özel:</label>
+ <div class="field-input">
+ <input type="text" name="intercom_ozel" class="medium">
+ </div>
+ </div>
+ <div class="grid-2" style="margin-top:12px">
+ <div class="field-row">
+ <label class="field-label">Anahtar-1 Fonksiyonu:</label>
+ <div class="field-input">
+ <input type="text" name="anahtar1_fonksiyon" class="grow">
+ </div>
+ </div>
+ <div class="field-row">
+ <label class="field-label">Anahtar-2 Fonksiyonu:</label>
+ <div class="field-input">
+ <input type="text" name="anahtar2_fonksiyon" class="grow">
+ </div>
+ </div>
+ </div>
+ </section>
+
+ <section class="section">
+ <h3 class="section-title">Kabin Kaseti Gösterge &amp; Butonlar</h3>
+ <table class="options-table">
+ <thead>
+ <tr><th>Buton</th><th>Seçim</th></tr>
+ </thead>
+ <tbody>
+ <tr>
+ <td>Alarm Butonu</td>
+ <td>
+ <select name="btn_alarm">
+ <option value="">-</option>
+ <option value="kk2x3057">KK2X3057 (2x30 mm)</option>
+ <option value="2x30">2x30 mm DOTMATRIX</option>
+ <option value="3x30">3x30 mm DOTMATRIX</option>
+ <option value="lcd70">70x40 mm LCD</option>
+ <option value="lcd114">114x64 mm LCD</option>
+ <option value="liftmedia">LIFTMEDIA (5.7'')</option>
+ <option value="yok">Yok</option>
+ </select>
+ </td>
+ </tr>
+ <tr>
+ <td>Stop Butonu</td>
+ <td>
+ <select name="btn_stop">
+ <option value="">-</option>
+ <option value="kk3x3057">KK3X3057</option>
+ <option value="2x30">2x30 mm</option>
+ <option value="3x30">3x30 mm</option>
+ <option value="yok">Yok</option>
+ </select>
+ </td>
+ </tr>
+ <tr>
+ <td>Fan Butonu</td>
+ <td>
+ <select name="btn_fan">
+ <option value="">-</option>
+ <option value="lcd240">LCD240x128A</option>
+ <option value="kk_lcd">KKLCD-A</option>
+ <option value="yok">Yok</option>
+ </select>
+ </td>
+ </tr>
+ <tr>
+ <td>İnterkom Butonu</td>
+ <td>
+ <select name="btn_interkom">
+ <option value="">-</option>
+ <option value="var">Var</option>
+ <option value="yok">Yok</option>
+ </select>
+ </td>
+ </tr>
+ <tr>
+ <td>Kapı Açma / Kapama</td>
+ <td>
+ Açma:
+ <select name="btn_kapi_ac">
+ <option value="">-</option>
+ <option value="var">Var</option>
+ <option value="yok">Yok</option>
+ </select>
+ Kapama:
+ <select name="btn_kapi_kapa">
+ <option value="">-</option>
+ <option value="var">Var</option>
+ <option value="yok">Yok</option>
+ </select>
+ </td>
+ </tr>
+ </tbody>
+ </table>
+ <p style="margin:14px 0 8px;font-weight:600;font-size:12px;color:var(--primary)">Kabin Kaseti Gösterge:</p>
+ <div class="checkbox-group">
+ <label><input type="radio" name="kabin_kaset_gosterge" value="kk2x3057"> KK2X3057 (2x30 mm DOTMATRIX)</label>
+ <label><input type="radio" name="kabin_kaset_gosterge" value="kk3x3057"> KK3X3057 (3x30 mm)</label>
+ <label><input type="radio" name="kabin_kaset_gosterge" value="lcd240"> LCD240x128A (114x64 mm)</label>
+ <label><input type="radio" name="kabin_kaset_gosterge" value="kk_lcd"> KKLCD-A (70x40 mm)</label>
+ <label><input type="radio" name="kabin_kaset_gosterge" value="liftmedia"> LIFTMEDIA (5.7'' TFT)</label>
+ </div>
+ </section>
+
+ <section class="section">
+ <h3 class="section-title">Gong &amp; Montaj</h3>
+ <table class="options-table">
+ <tbody>
+ <tr>
+ <th>Gong</th>
+ <td>
+ <label><input type="checkbox" name="gong" value="giris_kat"> Giriş katında</label>
+ <label><input type="checkbox" name="gong" value="her_kat"> Her katta</label>
+ Diğer:
+ <input type="text" name="gong_diger">
+ </td>
+ </tr>
+ <tr>
+ <th>Anahtar-1 / Anahtar-2</th>
+ <td>
+ <label><input type="checkbox" name="anahtar_yer" value="giris_kat"> Giriş katında</label>
+ <label><input type="checkbox" name="anahtar_yer" value="her_kat"> Her katta</label>
+ </td>
+ </tr>
+ <tr>
+ <th>Montaj</th>
+ <td>
+ <label><input type="radio" name="montaj" value="duvar"> Duvara montaj (Kutulu - standart ölçü)</label>
+ <label><input type="radio" name="montaj" value="kapi_kasasi"> Kapı kasasına montaj (Kutusuz)</label>
+ </td>
+ </tr>
+ <tr>
+ <th>Logo (Lazer)</th>
+ <td>
+ <label><input type="checkbox" name="logo_lazer" value="evet"> Evet</label>
+ Fonksiyon:
+ <input type="text" name="logo_fonksiyon" class="grow">
+ </td>
+ </tr>
+ </tbody>
+ </table>
+ </section>
+
+ <section class="section">
+ <h3 class="section-title">Kat Kaseti Özellikleri (Butonyer)</h3>
+ <div class="butonyer-block">
+ <h4>Kat Kaseti - Montaj &amp; Tip</h4>
+ <div class="checkbox-group">
+ <label><input type="checkbox" name="kat_kaset_montaj" value="siva_ustu"> Sıva Üstü (FLEXLINE)</label>
+ <label><input type="checkbox" name="kat_kaset_montaj" value="siva_alti"> Sıva Altı</label>
+ <label><input type="checkbox" name="kat_kaset_montaj" value="kapi_ustu"> Kapı Üstü</label>
+ <label><input type="checkbox" name="kat_kaset_montaj" value="giris_katta"> Giriş Katta</label>
+ <label><input type="checkbox" name="kat_kaset_montaj" value="diger_kat"> Diğer Katlarda</label>
+ </div>
+ <div class="field-row" style="margin-top:12px">
+ <label class="field-label">LED Rengi:</label>
+ <div class="field-input">
+ <input type="text" name="kat_led_renk" class="medium">
+ </div>
+ </div>
+ <div class="field-row">
+ <label class="field-label">Gösterge Seçeneği:</label>
+ <div class="field-input">
+ <input type="text" name="kat_gosterge_sec" class="grow">
+ </div>
+ </div>
+ </div>
+ </section>
+
+ <section class="section">
+ <h3 class="section-title">Kabin Kaseti Özellikleri (Butonyer)</h3>
+ <div class="butonyer-block">
+ <h4>Kabin Kaseti - Montaj &amp; Tip</h4>
+ <div class="checkbox-group">
+ <label><input type="checkbox" name="kabin_kaset_montaj" value="siva_ustu"> Sıva Üstü</label>
+ <label><input type="checkbox" name="kabin_kaset_montaj" value="kapi_ustu"> Kapı Üstü</label>
+ <label><input type="checkbox" name="kabin_kaset_montaj" value="giris_katta"> Giriş Katta</label>
+ <label><input type="checkbox" name="kabin_kaset_montaj" value="diger_kat"> Diğer Katlarda</label>
+ </div>
+ <div class="field-row" style="margin-top:12px">
+ <label class="field-label">LED Rengi:</label>
+ <div class="field-input">
+ <input type="text" name="kabin_led_renk" class="medium">
+ </div>
+ </div>
+ <div class="field-row">
+ <label class="field-label">Gösterge Seçeneği:</label>
+ <div class="field-input">
+ <input type="text" name="kabin_gosterge_sec" class="grow">
+ </div>
+ </div>
+ </div>
+ </section>
+
+ <section class="section">
+ <h3 class="section-title">Notlar</h3>
+ <textarea name="notlar" rows="5" placeholder="Ek notlarınız..."></textarea>
+ <div class="footnotes">
+ <ol>
+ <li>Sadece tek butonlu butonyerlerde geçerlidir.</li>
+ <li>Lütfen marka belirtiniz. Özel intercomlarda sadece montaj hazırlığı yapılır.</li>
+ <li>Birden fazla kabin kaset isteniyorsa lütfen onun için ayrı bir form doldurunuz.</li>
+ </ol>
+ </div>
+ </section>
+
+ </div>
+ </div>
+ </div>
+
+ </form>
+ </div>
+
+ <aside id="fiyat-panel" class="fiyat-panel no-print" aria-live="polite">
+ <div class="fiyat-panel-header">
+ <h2>Canlı Fiyat</h2>
+ <p>Seçimlerinize göre otomatik hesaplanır</p>
+ <div class="fiyat-para-row">
+ <label for="fiyat-para-birimi">Para birimi</label>
+ <select id="fiyat-para-birimi" aria-label="Gosterim para birimi">
+ <option value="TRY" selected>TL (TRY)</option>
+ <option value="EUR">Euro (EUR)</option>
+ <option value="USD">Dolar (USD)</option>
+ </select>
+ </div>
+ </div>
+ <div class="fiyat-kur-bar">
+ <div>
+ <span id="fiyat-kur-bilgi">Kurlar yükleniyor...</span>
+ <span id="fiyat-kur-durum"></span>
+ </div>
+ <button type="button" id="fiyat-kur-yenile" title="TCMB kurlarını yenile">Yenile</button>
+ <p id="fiyat-kur-uyari" class="fiyat-kur-uyari" hidden>
+ Canlı TCMB kuru için siteyi <strong>https</strong> üzerinden açın (Vercel veya yerel sunucu).
+ Dosyayı çift tıklayıp (<code>file://</code>) açarsanız kur API çalışmaz.
+ Yerel geliştirme: <code>npm start</code> → <code>http://localhost:3789/arcode-siparis-formu.html</code>
+ </p>
+ </div>
+ <div class="fiyat-panel-body">
+ <p id="fiyat-bos" class="fiyat-bos">Henüz seçim yapılmadı.<br>Formu doldurdukça kalemler burada görünür.</p>
+ <ul id="fiyat-satirlar"></ul>
+ <p id="fiyat-uyari" class="fiyat-uyari" hidden></p>
+ <div class="fiyat-ozet">
+ <div class="fiyat-ozet-row">
+ <span>Ara toplam</span>
+ <span id="fiyat-ara">0 ₺</span>
+ </div>
+ <div class="fiyat-ozet-row">
+ <span class="fiyat-ozet-label">KDV (%20)</span>
+ <span id="fiyat-kdv">0 ₺</span>
+ </div>
+ <div class="fiyat-ozet-row fiyat-ozet-row--toplam">
+ <span>Genel toplam</span>
+ <span id="fiyat-toplam">0 ₺</span>
+ </div>
+ <p id="fiyat-adet-bilgi" class="fiyat-adet-bilgi"></p>
+ </div>
+ </div>
+ </aside>
+
+ </div>
+
+</div>
+
+ <script src="data/urun-katalogu.js"></script>
+ <script src="js/kur-servisi.js"></script>
+ <script src="js/fiyat-motoru.js"></script>
+ <script src="js/form-fiyat-app.js"></script>
+<script>
+ document.querySelectorAll('.nav-tabs button').forEach(function (btn) {
+ btn.addEventListener('click', function () {
+ var tab = btn.getAttribute('data-tab');
+ document.querySelectorAll('.nav-tabs button').forEach(function (b) { b.classList.remove('active'); });
+ document.querySelectorAll('.page-panel').forEach(function (p) { p.classList.remove('active'); });
+ btn.classList.add('active');
+ document.getElementById(tab).classList.add('active');
+ });
+ });
+
+ var syncFields = [
+ { id1: 'firma', id2: 'firma_p2' },
+ { id1: 'siparis_no', id2: 'siparis_no_p2' },
+ { id1: 'siparis_tarihi', id2: 'siparis_tarihi_p2' },
+ { id1: 'teslim_tarihi', id2: 'teslim_p2' },
+ { id1: 'musteri_ref', id2: 'musteri_ref_p2' }
+ ];
+
+ syncFields.forEach(function (pair) {
+ var el1 = document.getElementById(pair.id1);
+ var el2 = document.getElementById(pair.id2);
+ if (!el1 || !el2) return;
+ el1.addEventListener('input', function () { el2.value = el1.value; });
+ el2.addEventListener('input', function () { el1.value = el2.value; });
+ el1.addEventListener('change', function () { el2.value = el1.value; });
+ el2.addEventListener('change', function () { el1.value = el2.value; });
+ });
+</script>
+</body>
+</html>
