@@ -1,0 +1,11 @@
+{
+  "rewrites": [
+    { "source": "/js/(.*)", "destination": "/dökümanlar/js/$1" },
+    { "source": "/data/(.*)", "destination": "/dökümanlar/data/$1" },
+    { "source": "/asia-otomasyon-logo-renkli.png", "destination": "/dökümanlar/asia-otomasyon-logo-renkli.png" },
+    { "source": "/asia-otomasyon-logo-beyaz.png", "destination": "/dökümanlar/asia-otomasyon-logo-beyaz.png" },
+    { "source": "/asia-otomasyon-logo.png", "destination": "/dökümanlar/asia-otomasyon-logo.png" },
+    { "source": "/arcode-siparis-formu.html", "destination": "/dökümanlar/arcode-siparis-formu.html" },
+    { "source": "/", "destination": "/dökümanlar/arcode-siparis-formu.html" }
+  ]
+}
