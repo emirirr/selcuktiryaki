@@ -1,0 +1,13 @@
+{
+  "rewrites": [
+    { "source": "/", "destination": "/arcode-siparis-formu.html" }
+  ],
+  "headers": [
+    {
+      "source": "/api/kurlar",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, s-maxage=1800, stale-while-revalidate=60" }
+      ]
+    }
+  ]
+}
